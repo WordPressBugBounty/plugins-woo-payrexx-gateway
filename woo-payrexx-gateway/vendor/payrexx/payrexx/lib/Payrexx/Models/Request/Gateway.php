@@ -71,6 +71,9 @@ class Gateway extends Base
     /** optional */
     protected bool $chargeOnAuthorization;
 
+    /** optional */
+    protected bool $reserveOnAuthorization;
+
     /** optional: Only for Clearhaus transactions. */
     protected string $customerStatementDescriptor;
 
@@ -115,6 +118,10 @@ class Gateway extends Base
 
     /** optional */
     protected string $spotlightOrderDetailsUrl;
+
+    protected string $language = '';
+
+    protected bool $isPriceExclusiveVat = false;
 
     public function getAmount(): int
     {
@@ -334,6 +341,16 @@ class Gateway extends Base
         $this->chargeOnAuthorization = $chargeOnAuthorization;
     }
 
+    public function isReserveOnAuthorization(): bool
+    {
+        return $this->reserveOnAuthorization;
+    }
+
+    public function setReserveOnAuthorization(bool $reserveOnAuthorization): void
+    {
+        $this->reserveOnAuthorization = $reserveOnAuthorization;
+    }
+
     public function getCustomerStatementDescriptor(): string
     {
         return $this->customerStatementDescriptor;
@@ -527,6 +544,26 @@ class Gateway extends Base
     public function setSpotlightOrderDetailsUrl(string $spotlightOrderDetailsUrl): void
     {
         $this->spotlightOrderDetailsUrl = $spotlightOrderDetailsUrl;
+    }
+
+    public function setLanguage(string $language): void
+    {
+        $this->language = $language;
+    }
+
+    public function getLanguage(): string
+    {
+        return $this->language;
+    }
+
+    public function setIsPriceExclusiveVat(bool $isPriceExclusiveVat): void
+    {
+        $this->isPriceExclusiveVat = $isPriceExclusiveVat;
+    }
+
+    public function getIsPriceExclusiveVat(): bool
+    {
+        return $this->isPriceExclusiveVat;
     }
 
     public function getResponseModel(): ResponseGateway

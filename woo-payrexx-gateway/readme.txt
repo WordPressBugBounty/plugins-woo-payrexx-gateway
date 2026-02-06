@@ -3,8 +3,8 @@ Contributors: payrexx
 Donate link: https://www.payrexx.com?ref=wordpress
 Tags: payment, e-commerce, credit card, payrexx, gateway
 Requires at least: 5.6
-Tested up to: 6.8
-Stable tag: 3.1.7
+Tested up to: 6.9
+Stable tag: 3.1.13
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -66,6 +66,24 @@ payment methods especially in Europe that you can quickly and easily integrate i
 3. Payrexx backend integration
 
 == Upgrade Notice ==
+
+= 3.1.13 =
+* Minor update, no need to backup
+
+= 3.1.12 =
+* Minor update, no need to backup
+
+= 3.1.11 =
+* Minor update, no need to backup
+
+= 3.1.10 =
+* Minor update, no need to backup
+
+= 3.1.9 =
+* Minor update, no need to backup
+
+= 3.1.8 =
+* Minor update, no need to backup
 
 = 3.1.7 =
 * Minor update, no need to backup
@@ -414,6 +432,25 @@ payment methods especially in Europe that you can quickly and easily integrate i
 * First version of Payrexx plugin
 
 == Changelog ==
+
+= 3.1.13 =
+* Info: Upgraded the Payrexx SDK to support Exclusive VAT handling.
+
+= 3.1.12 =
+* Info: Upgraded the Payrexx SDK.
+
+= 3.1.11 =
+* Improvement: Change payment method on Subscription.
+
+= 3.1.10 =
+* Info: Upgraded the Payrexx SDK.
+* Feature: Added language Support in the API.
+
+= 3.1.9 =
+* Change: Payment method CembraPay changed into Purchase on Account (CembraPay).
+
+= 3.1.8 =
+* Improvement: Variant information has been moved to the description in the API.
 
 = 3.1.7 =
 * Feature: Added New payment method VERD.cash.
