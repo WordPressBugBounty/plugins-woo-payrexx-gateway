@@ -142,7 +142,7 @@ abstract class WC_Payrexx_Gateway_SubscriptionBase extends WC_Payrexx_Gateway_Ba
 		}
 		$total_amount                 = floatval( $order->get_total( 'edit' ) );
 		$prefix                       = get_option( PAYREXX_CONFIGS_PREFIX . 'prefix' );
-		$data['reference']            = $prefix ? $prefix . '_' . $order_id : $order_id;
+		$data['reference']            = (string) ( $prefix ? $prefix . '_' . $order_id : $order_id );
 		$data['success_redirect_url'] = $this->get_return_url( $order );
 		$data['cancel_redirect_url']  = PaymentHelper::getCancelUrl( $order );
 		$data['language']             = $this->get_gateway_lang();
@@ -245,12 +245,15 @@ abstract class WC_Payrexx_Gateway_SubscriptionBase extends WC_Payrexx_Gateway_Ba
 			}
 
 			// Both must be given to do a valid recurring transaction
-			if ($this->payrexxApiService->chargeTransaction($tokenizationId, $amount)) {
-				continue;
-			}
+			$chargeResult = $this->payrexxApiService->chargeTransaction($tokenizationId, $amount);
 
-			// Recurring payment failed if we reach this point
-			$subscription->payment_failed();
+			// Only an explicit failure (declined / real error) may be retried. A null
+			// result means the charge timed out and its outcome is unknown - marking it
+			// failed would trigger a retry that could double-charge, so we leave it for
+			// the Payrexx webhook to settle instead.
+			if ($chargeResult === false) {
+				$subscription->payment_failed();
+			}
 		}
 	}
 }

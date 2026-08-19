@@ -1,11 +1,11 @@
 <?php
 
 /**
- * Example: PaymentMethod request model
+ * Example: subscription request model
  *
  * @author    Payrexx Development <info@payrexx.com>
  * @copyright Payrexx AG
- * @since     v1.7.5
+ * @since     v2.0.5
  */
 
 spl_autoload_register(function($class) {
@@ -26,10 +26,12 @@ $secret = 'YOUR_SECRET';
 
 $payrexx = new \Payrexx\Payrexx($instanceName, $secret);
 
-$paymentProvider = new \Payrexx\Models\Request\PaymentProvider();
-
+$subscription = new \Payrexx\Models\Request\Subscription();
 try {
-    $response = $payrexx->getAll($paymentProvider);
+    $subscription->setOrderByStartDate('DESC');
+    $subscription->setOffset(10);
+    $subscription->setLimit(30);
+    $response = $payrexx->getAll($subscription);
     var_dump($response);
 } catch (\Payrexx\PayrexxException $e) {
     print $e->getMessage();

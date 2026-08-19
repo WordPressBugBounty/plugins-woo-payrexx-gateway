@@ -4,7 +4,7 @@ Donate link: https://www.payrexx.com?ref=wordpress
 Tags: payment, e-commerce, credit card, payrexx, gateway
 Requires at least: 5.6
 Tested up to: 7.0
-Stable tag: 3.1.22
+Stable tag: 3.1.26
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -67,6 +67,15 @@ payment methods especially in Europe that you can quickly and easily integrate i
 
 == Upgrade Notice ==
 
+= 3.1.26 =
+* Minor update, no need to backup
+= 3.1.25 =
+* Minor update, no need to backup
+= 3.1.24 =
+* Minor update, no need to backup
+
+= 3.1.23 =
+* Minor update, no need to backup
 = 3.1.22 =
 * Minor update, no need to backup
 = 3.1.21 =
@@ -459,6 +468,15 @@ payment methods especially in Europe that you can quickly and easily integrate i
 
 == Changelog ==
 
+= 3.1.26 =
+* PP-20452: Fixed paid orders staying unpaid for merchants without a prefix (Payrexx platform merchants) - the order reference is now sent as a string so it is no longer dropped from the API request, letting the payment webhook match the order again.
+= 3.1.25 =
+* PP-20387: Recurring subscription charges no longer hang and abort with a fatal error when the Payrexx API is slow - the request now times out cleanly. A timed-out charge whose outcome is unknown is left for the webhook to confirm instead of being retried, to avoid a possible double charge.
+= 3.1.24 =
+* PP-20386: Webhooks referencing an order or subscription that no longer exists (e.g. an unpaid checkout draft removed by WooCommerce's daily cleanup) are now acknowledged instead of returning an error, which stopped Payrexx from retrying the delivery repeatedly.
+
+= 3.1.23 =
+* PP-20204: Order line items with per-unit rounding are now sent as an itemized basket instead of a single purpose string.
 = 3.1.22 =
 * PP-20180: Aborting a checkout now also cancels a pending invoice, prepayment or bank transfer transaction instead of leaving it open in the Payrexx backend.
 * PP-20180: If that cancellation fails, the order gets a note asking the merchant to check the payment, instead of failing silently.

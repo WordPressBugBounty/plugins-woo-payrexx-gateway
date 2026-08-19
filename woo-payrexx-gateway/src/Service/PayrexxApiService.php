@@ -75,8 +75,17 @@ class PayrexxApiService
 		$gateway->setChargeOnAuthorization($chargeOnAuth);
 
 		$basket = BasketUtil::createBasketByCart($cart);
-		$basketAmount = round(BasketUtil::getBasketAmount($basket), 2);
-		if ($totalAmount && $totalAmount === $basketAmount) {
+		$basketInCents = (int) round(BasketUtil::getBasketAmount($basket) * 100);
+
+		// Each line amount is rounded to whole cents per unit, so the basket sum can drift
+		// a few cents from the order total (PP-20204). Tolerate that instead of collapsing
+		// every line item into one purpose string, which would also drop the VAT breakdown.
+		$roundingTolerance = 1;
+		foreach ($basket as $basketItem) {
+			$roundingTolerance += (int) $basketItem['quantity'];
+		}
+
+		if ($totalAmount && abs($totalInCents - $basketInCents) <= $roundingTolerance) {
 			$gateway->setBasket($basket);
 		} else {
 			$gateway->setPurpose([BasketUtil::createPurposeByBasket($basket)]);
@@ -224,6 +233,10 @@ class PayrexxApiService
 		}
 	}
 
+	/**
+	 * @return bool|null true = charged, false = declined/failed (safe to retry),
+	 *                   null = request timed out (outcome unknown, must NOT be retried).
+	 */
 	public function chargeTransaction($transactionId, $amount) {
 		$payrexx = $this->getInterface();
 		$transaction = new \Payrexx\Models\Request\Transaction();
@@ -233,6 +246,13 @@ class PayrexxApiService
 			$payrexx->charge($transaction);
 			return true;
 		} catch (\Payrexx\PayrexxException $e) {
+			// A cURL timeout (no HTTP response) means the request was sent but we never
+			// learned the outcome - the charge may well have gone through. Signal "unknown"
+			// so the caller does not retry and risk a double charge. Any other error is a
+			// real failure and can be retried safely.
+			if ($e->getCode() === 0 && (int) $e->getMessage() === CURLE_OPERATION_TIMEDOUT) {
+				return null;
+			}
 		}
 		return false;
 	}

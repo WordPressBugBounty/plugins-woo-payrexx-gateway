@@ -1,14 +1,18 @@
 <?php
 
 /**
- * Example: PaymentMethod request model
+ * Example for get one Bill
  *
  * @author    Payrexx Development <info@payrexx.com>
  * @copyright Payrexx AG
- * @since     v1.7.5
+ * @since     v2.0.0
  */
 
-spl_autoload_register(function($class) {
+use Payrexx\Models\Request\Bill;
+use Payrexx\Payrexx;
+use Payrexx\PayrexxException;
+
+spl_autoload_register(function ($class) {
     $root = dirname(__DIR__);
     $classFile = $root . '/lib/' . str_replace('\\', '/', $class) . '.php';
     if (file_exists($classFile)) {
@@ -24,13 +28,19 @@ $instanceName = 'YOUR_INSTANCE_NAME';
 // if you think someone got your secret, just regenerate it in the payrexx administration
 $secret = 'YOUR_SECRET';
 
-$payrexx = new \Payrexx\Payrexx($instanceName, $secret);
+try {
+    $payrexx = new Payrexx($instanceName, $secret);
+} catch (PayrexxException $e) {
+    print $e->getMessage();
+    exit();
+}
 
-$paymentProvider = new \Payrexx\Models\Request\PaymentProvider();
+$bill = new Bill();
+$bill->setUuid('YOUR_UUID');
 
 try {
-    $response = $payrexx->getAll($paymentProvider);
+    $response = $payrexx->getOne($bill);
     var_dump($response);
-} catch (\Payrexx\PayrexxException $e) {
+} catch (PayrexxException $e) {
     print $e->getMessage();
 }
